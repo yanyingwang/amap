@@ -16,7 +16,7 @@ Gaode Amap web service API, please check @hyperlink["https://lbs.amap.com/api/we
 
 
 @defproc[(current-amap-key [key string?]) string?]{
-set Amap's key, which key you can get it from amap webside after you sign in as a developer. And this key will be used by request data from it's website.
+set Amap's key, which key you can get it from amap webside after you sign in as a developer. And this key will be used for requesting data from it's website.
 }
 
 
