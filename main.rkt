@@ -29,22 +29,55 @@
 
 (require request
          json
-         racket/format)
+         racket/format
+         racket/string
+         racket/dict
+         net/uri-codec)
 
-(provide ip-location
+(provide geocode/geo
+         ip
+
+         http-response-body/json
+         http-response-body
+         http-response-headers
+         http-response-code
+         amap-request
+
          current-amap-key)
 
-
-(define domain "restapi.amap.com")
 (define current-amap-key (make-parameter ""))
 
 
-(define (ip-location ip)
-  (define response
-    (get (make-domain-requester domain http-requester)
-         @~a{/v3/ip?ip=@|ip|&key=@|(current-amap-key)|}))
-  (define result (string->jsexpr (http-response-body response)))
-  result)
+(define (amap-request path parameters)
+  (set! parameters (dict-set parameters 'key (current-amap-key)))
+  (define parameters-str (string-join (for/list ([(k v) (in-dict parameters)])
+                                        (format "~a=~a" k v))
+                                      "&"))
+  (get (make-domain-requester "restapi.amap.com" http-requester)
+       (format "/v3/~a?~a" path parameters-str)))
+
+(define (http-response-body/json response)
+  (string->jsexpr (http-response-body response)))
+
+
+
+
+(define (geocode/geo address
+                     #:city [city #f]
+                     #:batch [batch "false"]
+                     #:output [output "json"])
+
+  (define parameters (hash 'address address
+                           'batch batch
+                           'output output))
+  (and city
+       (set! parameters (dict-set parameters 'city city)))
+
+  (amap-request "geocode/geo" parameters))
+
+
+(define (ip ip)
+  (amap-request "ip" (hash 'ip ip)))
 
 
 
