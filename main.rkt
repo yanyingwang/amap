@@ -24,25 +24,22 @@
 ;; See the current version of the racket style guide here:
 ;; http://docs.racket-lang.org/style/index.html
 
-;; Code here
-
 
 (require request
          json
          racket/format
          racket/string
          racket/dict
-         net/uri-codec)
+         #;net/uri-codec)
 
-(provide geocode/geo
+(provide geocode/regeo
+         geocode/geo
          ip
-
          http-response-body/json
          http-response-body
          http-response-headers
          http-response-code
          amap-request
-
          current-amap-key)
 
 (define current-amap-key (make-parameter ""))
@@ -66,15 +63,29 @@
                      #:city [city #f]
                      #:batch [batch "false"]
                      #:output [output "json"])
-
   (define parameters (hash 'address address
                            'batch batch
                            'output output))
-  (and city
-       (set! parameters (dict-set parameters 'city city)))
-
+  (and city (set! parameters (dict-set parameters 'city city)))
   (amap-request "geocode/geo" parameters))
 
+(define (geocode/regeo location
+                       #:poitype [poitype #f]
+                       #:radius [radius 100]
+                       #:extensions [extensions "base"]
+                       #:batch [batch "false"]
+                       #:roadlevel [roadlevel #f]
+                       #:output [output "json"]
+                       #:homeorcorp [homeorcorp 0])
+  (define parameters (hash 'location location
+                           'radius radius
+                           'extensions extensions
+                           'homeorcorp homeorcorp
+                           'batch batch
+                           'output output))
+  (and poitype (set! parameters (dict-set parameters 'poitype poitype)))
+  (and roadlevel (set! parameters (dict-set parameters 'roadlevel roadlevel)))
+  (amap-request "geocode/regeo" parameters))
 
 (define (ip ip)
   (amap-request "ip" (hash 'ip ip)))
@@ -97,32 +108,8 @@
   (require racket/cmdline)
   (define who (box "world"))
   (command-line
-    #:program "my-program"
-    #:once-each
-    [("-n" "--name") name "Who to say hello to" (set-box! who name)]
-    #:args ()
-    (printf "hello ~a~n" (unbox who))))
-
-
-
-
-
-
-
-;; (define (fribble interesting-arg option-1 option-2 option-3)
-;;   (displayln interesting-arg)
-;;   (displayln option-1)
-;;   (displayln option-2)
-;;   (displayln option-3)
-;;   )
-
-;; (define current-fribble-option-1 (make-parameter "a"))
-;; (define current-fribble-option-2 (make-parameter "b"))
-;; (define current-fribble-option-3 (make-parameter "c"))
-
-;; (define (fribble interesting-arg)
-;;   (displayln interesting-arg)
-;;   (displayln (current-fribble-option-1))
-;;   (displayln (current-fribble-option-2))
-;;   (displayln (current-fribble-option-3))
-;;   )
+   #:program "my-program"
+   #:once-each
+   [("-n" "--name") name "Who to say hello to" (set-box! who name)]
+   #:args ()
+   (printf "hello ~a~n" (unbox who))))
