@@ -6,9 +6,9 @@
 @author[(author+email "Yanying Wang" "yanyingwang1@gmail.com")]
 @defmodule[amap]
 
-Gaode Amap web service API, please check @hyperlink["https://lbs.amap.com/api/webservice/summary/" "offical api page"].
+Gaode Amap web service API, you can check @hyperlink["https://lbs.amap.com/api/webservice/summary/" "official api page"] as well.
 
-@hyperlink["https://gitlab.com/yanyingwang/amap" "source code"]
+Source code: @url["https://gitlab.com/yanyingwang/amap"]
 
 @[table-of-contents]
 
@@ -16,8 +16,9 @@ Gaode Amap web service API, please check @hyperlink["https://lbs.amap.com/api/we
 
 
 @defproc[(current-amap-key [key string?]) string?]{
-Set Amap's key, which key you can get it from amap webside after you sign in as a developer. And this key will be used for requesting data from it's website.
-If call the procedure without @italic{key}, it'll return current value.
+Set Amap's API key, which key you can get it from the Amap webside after you sign in as a developer. And this key will be used for requesting data from it's website.
+
+If calling the procedure without @italic{key}, it'll show the current value.
 }
 
 

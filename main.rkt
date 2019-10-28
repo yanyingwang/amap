@@ -28,8 +28,7 @@
          json
          racket/format
          racket/string
-         racket/dict
-         #;net/uri-codec)
+         racket/dict)
 
 (provide place/text
          geocode/regeo
