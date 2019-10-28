@@ -8,4 +8,5 @@ before_script:
 
 run-test:
   script:
-    - raco test ./main.rkt # KEY="amap key" raco test ./main.rkt
+    - raco test ./main.rkt
+    # KEY="amap key" raco test ./main.rkt
