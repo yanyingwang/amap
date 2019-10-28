@@ -1,4 +1,4 @@
-#lang at-exp racket/base
+#lang racket/base
 
 (module+ test
   (require rackunit))
@@ -24,7 +24,6 @@
 ;; See the current version of the racket style guide here:
 ;; http://docs.racket-lang.org/style/index.html
 
-
 (require request
          json
          racket/format
@@ -32,7 +31,8 @@
          racket/dict
          #;net/uri-codec)
 
-(provide geocode/regeo
+(provide place/text
+         geocode/regeo
          geocode/geo
          ip
          http-response-body/json
@@ -44,7 +44,6 @@
 
 (define current-amap-key (make-parameter ""))
 
-
 (define (amap-request path parameters)
   (set! parameters (dict-set parameters 'key (current-amap-key)))
   (define parameters-str (string-join (for/list ([(k v) (in-dict parameters)])
@@ -55,8 +54,6 @@
 
 (define (http-response-body/json response)
   (string->jsexpr (http-response-body response)))
-
-
 
 
 (define (geocode/geo address
@@ -91,13 +88,63 @@
   (amap-request "ip" (hash 'ip ip)))
 
 
+(define (place/text #:keywords [keywords #f]
+                    #:types [types #f]
+                    #:city [city #f]
+                    #:citylimit [citylimit "false"]
+                    #:children [children 0]
+                    #:offset [offset 20]
+                    #:page [page 1]
+                    #:extensions [extensions "base"]
+                    #:output [output "json"])
+  (define parameters (hash 'citylimit citylimit
+                           'children children
+                           'offset offset
+                           'page page
+                           'extensions extensions
+                           'output output))
+  (and keywords (set! parameters (dict-set parameters 'keywords keywords)))
+  (and types (set! parameters (dict-set parameters 'types types)))
+  (and city (set! parameters (dict-set parameters 'city city)))
+  (amap-request "place/text" parameters))
+
+
+
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;
+;; ====== test ====== ;;
+;;;;;;;;;;;;;;;;;;;;;;;;
+
 
 (module+ test
   ;; Any code in this `test` submodule runs when this file is run using DrRacket
   ;; or with `raco test`. The code here does not run when this file is
   ;; required by another module.
+  (current-amap-key (getenv "KEY"))
+  (check-equal? (current-amap-key) (getenv "KEY"))
 
-  (check-equal? (+ 2 2) 4))
+  (check-equal? 200
+                (http-response-code (amap-request "geocode/geo" (hash 'address "上海市黄浦区外滩18号"))))
+
+  (check-true (jsexpr?
+               (http-response-body/json (amap-request "geocode/geo" (hash 'address "上海市黄浦区外滩18号")))))
+
+  (check-equal? 200
+                (http-response-code (geocode/geo "上海市黄浦区外滩18号")))
+
+  (check-equal? 200
+                (http-response-code (geocode/geo "万国博览建筑群"
+                                                 #:city "shanghai"
+                                                 #:output "xml")))
+  (check-equal? 200
+                (http-response-code (geocode/regeo "121.489822,31.238416")))
+
+  (check-equal? 200
+                (http-response-code (ip "61.151.166.146")))
+
+
+  )
 
 (module+ main
   ;; (Optional) main submodule. Put code here if you need it to be executed when
