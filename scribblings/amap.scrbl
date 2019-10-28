@@ -59,26 +59,27 @@ return information of an IP.
 (current-amap-key) ;=> show your amap key that you've just set.
 
 
-> (geocode/geo "万国博览建筑群" #:city "shanghai" #:output "json")
+(geocode/geo "万国博览建筑群" #:city "shanghai" #:output "xml")
 (http-response
  200
  '#hash(("Access-Control-Allow-Origin" . "*")
-        ("gsid" . "011025247218157224538140600020601890766")
-        ("Date" . "Mon, 28 Oct 2019 06:49:41 GMT")
+        ("Date" . "Mon, 28 Oct 2019 07:20:58 GMT")
+        ("sc" . "0.009")
+        ("Transfer-Encoding" . "chunked")
+        ("Vary" . "Accept-Encoding")
         ("Access-Control-Allow-Headers"
          .
          "DNT,X-CustomHeader,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,key,x-biz,x-info,platinfo,encr,enginever,gzipped,poiid")
-        ("Content-Type" . "application/json;charset=UTF-8")
-        ("Access-Control-Allow-Methods" . "*")
-        ("sc" . "0.011")
+        ("Content-Type" . "application/xml;charset=UTF-8")
+        ("gsid" . "011025230097157224725840000020375504374")
         ("Connection" . "close")
-        ("X-Powered-By" . "ring/1.0.0")
-        ("Content-Length" . "415"))
- "{\"status\":\"1\",\"info\":\"OK\",\"infocode\":\"10000\",\"count\":\"1\",\"geocodes\":[{\"formatted_address\":\"上海市黄浦区万国博览建筑群\",\"country\":\"中国\",\"province\":\"上海市\",\"citycode\":\"021\",\"city\":\"上海市\",\"district\":\"黄浦区\",\"township\":[],\"neighborhood\":{\"name\":[],\"type\":[]},\"building\":{\"name\":[],\"type\":[]},\"adcode\":\"310101\",\"street\":[],\"number\":[],\"location\":\"121.489026,31.239125\",\"level\":\"兴趣点\"}]}")
+        ("Access-Control-Allow-Methods" . "*")
+        ("X-Powered-By" . "ring/1.0.0"))
+ "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<response><status>1</status><info>OK</info><infocode>10000</infocode><count>1</count><geocodes type=\"list\"><geocode><formatted_address>上海市黄浦区万国博览建筑群</formatted_address><country>中国</country><province>上海市</province><citycode>021</citycode><city>上海市</city><district>黄浦区</district><township></township><neighborhood><name></name><type></type></neighborhood><building><name></name><type></type></building><adcode>310101</adcode><street></street><number></number><location>121.489026,31.239125</location><level>兴趣点</level></geocode></geocodes></response>")
+>
 
 
-
-> (http-response-body/json (geocode/geo "东方明珠" #:city "shanghai" #:output "json"))
+> (http-response-body/json (geocode/geo "东方明珠" #:city "shanghai"))
 '#hasheq((count . "1")
          (geocodes
           .
