@@ -10,10 +10,7 @@ Gaode Amap web service API, you can check @hyperlink["https://lbs.amap.com/api/w
 
 Source code: @url["https://gitlab.com/yanyingwang/amap"]
 
-@[table-of-contents]
-
 @section{Procedure Reference}
-
 
 @defproc[(current-amap-key [key string?]) string?]{
 Set Amap's API key, which key you can get it from the Amap webside after you sign in as a developer. And this key will be used for requesting data from it's website.
@@ -53,7 +50,6 @@ return information of an IP.
 @section{Example}
 
 @codeblock[#:keep-lang-line? #f]|{
-(require amap)
 
 (current-amap-key "your amap key here")
 
