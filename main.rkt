@@ -28,12 +28,17 @@
          json
          racket/format
          racket/string
-         racket/dict)
+         racket/dict
+         racket/contract)
 
 (provide place/text
          geocode/regeo
-         geocode/geo
-         ip
+         (contract-out [geocode/geo (->* (string?)
+                                         (#:city any/c
+                                          #:batch (or/c "true" "false")
+                                          #:output (or/c "xml" "json"))
+                                         any)]
+                       [ip (-> string? any)])
          http-response-body/json
          http-response-body
          http-response-headers
