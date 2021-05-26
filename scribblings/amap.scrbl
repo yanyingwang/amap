@@ -1,61 +1,31 @@
 #lang scribble/manual
 @require[@for-label[amap
-                    racket/base]]
+                    racket/base]
+         scribble-rainbow-delimiters]
+
+@script/rainbow-delimiters*
 
 @title{amap}
 @author[(author+email "Yanying Wang" "yanyingwang1@gmail.com")]
 @defmodule[amap]
 
-Gaode Amap web service API, you can check @hyperlink["https://lbs.amap.com/api/webservice/summary/" "official api page"] as well.
+Gaode Amap web service API, Check out @hyperlink["https://lbs.amap.com/api/webservice/summary/" "official api page"] as well.
 
-Source code: @url["https://gitlab.com/yanyingwang/amap"]
-
-@section{Procedure Reference}
-
-@defproc[(current-amap-key [key string?]) string?]{
-Set Amap's API key, which key you can get it from the Amap webside after you sign in as a developer. And this key will be used for requesting data from it's website.
-
-If calling the procedure without @italic{key}, it'll show the current value.
-}
+@table-of-contents[]
 
 
 
-@defproc[(amap-request [path string?]
-                       [parameters (listof hash? alist?)])
-          http-response?]{
-execute the requesting to amap api.
-}
 
-@defproc[(http-response-body/json [struct http-response?])
-          jsexpr?]{
-parsing the result of http requesting and retrun a racket hash data.
-}
+@section{Examples}
 
+@racketinput[(current-amap-key "put your amap key here")]
 
+@#reader scribble/comment-reader
+(racketinput
+(current-amap-key) ; show your amap key that you've just setted
+)
 
-@defproc[(geocode/geo [address string?]
-                       [#:city city string?]
-                       [#:batch batch string? "false"]
-                       [#:output output string? "json"])
-          http-response?]{
-return the geocode of the @italic{address}, you can also check @hyperlink["https://lbs.amap.com/api/webservice/guide/api/georegeo" "original amap doc"] for more details.
-}
-
-@defproc[(ip [ip-str string?])
-          http-response?]{
-return information of an IP.
-}
-
-
-@section{Example}
-
-@codeblock[#:keep-lang-line? #f]|{
-
-(current-amap-key "your amap key here")
-
-(current-amap-key) ;=> show your amap key that you've just set.
-
-
+@racketinput[
 (geocode/geo "万国博览建筑群" #:city "shanghai" #:output "xml")
 (http-response
  200
@@ -73,10 +43,10 @@ return information of an IP.
         ("Access-Control-Allow-Methods" . "*")
         ("X-Powered-By" . "ring/1.0.0"))
  "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<response><status>1</status><info>OK</info><infocode>10000</infocode><count>1</count><geocodes type=\"list\"><geocode><formatted_address>上海市黄浦区万国博览建筑群</formatted_address><country>中国</country><province>上海市</province><citycode>021</citycode><city>上海市</city><district>黄浦区</district><township></township><neighborhood><name></name><type></type></neighborhood><building><name></name><type></type></building><adcode>310101</adcode><street></street><number></number><location>121.489026,31.239125</location><level>兴趣点</level></geocode></geocodes></response>")
->
-
-
-> (http-response-body/json (geocode/geo "东方明珠" #:city "shanghai"))
+]
+@racketinput[
+(http-response-body/json
+  (geocode/geo "东方明珠" #:city "shanghai"))
 '#hasheq((count . "1")
          (geocodes
           .
@@ -97,10 +67,10 @@ return information of an IP.
          (info . "OK")
          (infocode . "10000")
          (status . "1"))
+]
 
-
-
-> (http-response-body/json (ip "61.151.166.146"))
+@racketinput[
+(http-response-body/json (ip "61.151.166.146"))
 '#hasheq((adcode . "310000")
          (city . "上海市")
          (info . "OK")
@@ -108,5 +78,38 @@ return information of an IP.
          (province . "上海市")
          (rectangle . "120.8397067,30.77980118;122.1137989,31.66889673")
          (status . "1"))
+]
 
-}|
+
+@section{API}
+@defproc[(current-amap-key [key string?]) string?]{
+Set Amap's API key, which key you can get it from the Amap webside after you sign in as a developer. And this key will be used for requesting data from it's website.
+@linebreak[]
+If calling the procedure without @italic{key}, it'll show the current value.
+}
+
+@defproc[(amap-request [path string?]
+                       [parameters (listof hash? alist?)])
+          http-response?]{
+Execute the requesting to amap API.
+}
+
+@defproc[(http-response-body/json [struct http-response?])
+          jsexpr?]{
+Parsing the result of http requesting and retrun a racket hash data.
+}
+
+
+
+@defproc[(geocode/geo [address string?]
+                       [#:city city string?]
+                       [#:batch batch string? "false"]
+                       [#:output output string? "json"])
+          http-response?]{
+Returns the geocode of the @italic{address}, you can also check @hyperlink["https://lbs.amap.com/api/webservice/guide/api/georegeo" "original amap doc"] for more details.
+}
+
+@defproc[(ip [ip-str string?])
+          http-response?]{
+Returns information of an IP.
+}
