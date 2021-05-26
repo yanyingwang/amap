@@ -8,28 +8,36 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        racket-version: [ "7.7" ]
-        racket-variant: [ "regular" ]
+        racket-version: ["stable"]
+        racket-variant: ["CS"]
     name: main
     steps:
-      - uses: actions/checkout@master
-      - uses: Bogdanp/setup-racket@v0.5
+      - uses: actions/checkout@v2
+      - uses: Bogdanp/setup-racket@v0.12
         with:
           architecture: x64
-          distribution: full # or minimal
+          distribution: full
           variant: ${{ matrix.racket-variant }}
           version: ${{ matrix.racket-version }}
-      - name: install deps
+      - name: Installing pkgs
+        run: raco pkg install --no-docs --auto --name amap
+      - name: Compiling and building its docs
+        run: raco setup --check-pkg-deps --unused-pkg-deps amap
+
+      - name: build doc
         run: |
-          raco pkg install --auto
-      - name: build docs
-        run: |
-          raco scribble --dest docs --dest-name index scribblings/amap.scrbl
+          raco scribble \
+          --dest doc \
+          --dest-name index \
+          ++main-xref-in \
+          --redirect-main https://docs.racket-lang.org/ \
+          --redirect https://docs.racket-lang.org/local-redirect/index.html \
+          scribblings/amap.scrbl
       - name: Deploy to GitHub Pages
         if: success()
         uses: crazy-max/ghaction-github-pages@v1.2.5
         with:
           target_branch: gh-pages
-          build_dir: docs
+          build_dir: doc
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

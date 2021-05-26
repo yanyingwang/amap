@@ -1,9 +1,9 @@
 amap
 =======
 
-Gaode Amap web service API, implemented by Racket lang.
+Gaode Amap web service API, implemented in Racket lang.
 
-racket doc: https://docs.racket-lang.org/amap/index.html
+doc: https://yanying.wang/amap
 
 
 
